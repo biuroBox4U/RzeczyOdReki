@@ -313,5 +313,50 @@
       "Czas pracy": "6-12 godzin (w zależności od jasności)",
       "Podstawka": "Drewniana (składana)"
     }
+  },
+  {
+    "id": "007",
+    "active": true,
+    "meta": {
+      "breadcrumbs": [
+        "Druk 3D",
+        "Akcesoria",
+        "Deskorolki"
+      ],
+      "title": "Deskorolka",
+      "price": "115 zł",
+      "oldPrice": "300 zł",
+      "isAvailable": true
+    },
+    "config": {
+      "mode": "mode-both",
+      "allegroLink": "https://allegro.pl/twoja-oferta",
+      "cultsLink": "https://cults3d.com/twoj-model"
+    },
+    "images": [],
+    "content": {
+      "shortDescription": "Fajna Fajna",
+      "longDescription": "<p>To jest profesjonalny i funkcjonalny <strong>Deskorolka</strong>, w całości wyprodukowany w technologii druku 3D z materiału klasy premium. Łączy nowoczesną estetykę z najwyższą użytecznością.</p>\n\n<h4 class='text-md font-bold mt-6 mb-2'>Główne zalety produktu:</h4>\n<ul class='check-list mb-6'>\n  <li>Specjalnie zaprojektowana konstrukcja o wysokiej ergonomii</li>\n  <li>Wytrzymały materiał o wysokiej odporności na zarysowania</li>\n  <li>Nowoczesny design pasujący do każdego wnętrza</li>\n</ul>\n\n<div class='my-8 rounded-xl overflow-hidden shadow-lg'>\n  <img src='https://raw.githubusercontent.com/biuroBox4U/RzeczyOdReki/refs/heads/master/images/001_5.jpg' class='w-full h-auto'>\n  <p class='text-xs text-center py-2 bg-gray-50 text-gray-500 border-t border-gray-100'>Krótki opis lub podpis pod zdjęciem produktu</p>\n</div>\n\n<p>Dzięki zastosowaniu ekologicznych i niezwykle trwałych materiałów, nasz produkt posłuży Ci przez lata.</p>"
+    },
+    "colors": [
+      {
+        "name": "Biały",
+        "hex": "#ffffff",
+        "slideIndex": 1
+      }
+    ],
+    "variants": [
+      {
+        "name": "Klasyczny",
+        "image": "",
+        "link": "#",
+        "isCurrent": true
+      }
+    ],
+    "specs": {
+      "Technologia": "FDM 3D",
+      "Materiał": "PLA Bio-Polimer",
+      "Producent": "Rzeczy Od Ręki"
+    }
   }
 ]
