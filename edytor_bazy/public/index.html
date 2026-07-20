@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rzeczy od Ręki - Kreator i Edytor Bazy Produktów</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-area">
+            <span class="logo-dot"></span>
+            <h1>Rzeczy od Ręki</h1>
+          </div>
+          <p class="subtitle">Baza Produktów</p>
+        </div>
+
+        <div class="sidebar-controls">
+          <div class="sidebar-prompt">
+            Wybierz produkt z listy poniżej, aby rozpocząć edycję, powielić lub
+            stworzyć nowy wpis.
+          </div>
+          <div class="search-box">
+            <svg
+              class="icon search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Szukaj produktu (ID, tytuł)..."
+            />
+          </div>
+
+          <div class="filter-bar">
+            <button id="filter-all" class="filter-btn active">Wszystkie</button>
+            <button id="filter-active" class="filter-btn">Aktywne</button>
+            <button id="filter-inactive" class="filter-btn">Nieaktywne</button>
+          </div>
+
+          <button id="btn-add-product" class="btn btn-primary btn-full-width">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Dodaj nowy produkt
+          </button>
+        </div>
+
+        <div class="product-list" id="products-list-container">
+          <div class="loading-state">Ładowanie produktów...</div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="git-status-badge">
+            <span class="git-status-dot"></span>
+            <span id="git-info-text">Git: weryfikacja...</span>
+          </div>
+          <button
+            id="btn-show-git"
+            class="btn btn-icon"
+            title="Otwórz panel synchronizacji Git"
+          >
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"
+              />
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+      <div class="sidebar-resizer" id="sidebar-resizer"></div>
+
+      <main class="main-content">
+        <header class="top-nav">
+          <div class="header-breadcrumbs">
+            <button
+              type="button"
+              id="btn-toggle-sidebar"
+              class="btn btn-secondary btn-small"
+              style="margin-right: 12px; padding: 6px 12px"
+              title="Pokaż/Ukryj listę produktów"
+            >
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                style="width: 14px; height: 14px; vertical-align: middle"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+              Lista
+            </button>
+            <span class="breadcrumb-item">Pulpit</span>
+            <span class="breadcrumb-separator">/</span>
+            <span id="current-action-breadcrumb" class="breadcrumb-item active"
+              >Brak wybranego produktu</span
+            >
+          </div>
+
+          <div class="action-group">
+            <button id="btn-pull" class="btn btn-secondary">
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M3 16v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M12 18V3M12 18l-5-5m5 5l5-5"
+                />
+              </svg>
+              Pobierz (Pull)
+            </button>
+            <button id="btn-push-panel" class="btn btn-accent">
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M3 16v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4M12 3v15M12 3L7 8m5-5l5 5"
+                />
+              </svg>
+              Wyślij na GitHub
+            </button>
+            <button id="btn-settings" class="btn btn-info" title="Ustawienia">
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="editor-view-container">
+          <form
+            id="product-form"
+            class="product-form hidden"
+            onsubmit="event.preventDefault()"
+          >
+            <div class="form-header-card">
+              <div class="form-title-inputs">
+                <div class="form-group id-group">
+                  <label for="p-id">ID Produktu</label>
+                  <input type="text" id="p-id" required placeholder="np. 007" />
+                </div>
+                <div class="form-group title-group">
+                  <label for="p-title">Tytuł Produktu (Blogger & Meta)</label>
+                  <input
+                    type="text"
+                    id="p-title"
+                    required
+                    placeholder="np. Lampka LED Neon - Projekt"
+                  />
+                </div>
+              </div>
+              <div class="form-status-toggles">
+                <div class="toggle-control">
+                  <label class="switch-container">
+                    <input type="checkbox" id="p-active" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">Aktywny w bazie</span>
+                </div>
+                <div class="toggle-control">
+                  <label class="switch-container">
+                    <input type="checkbox" id="p-available" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">Dostępny w sklepie</span>
+                </div>
+              </div>
+            </div>
+
+            <nav class="form-tabs">
+              <button
+                type="button"
+                class="tab-trigger active"
+                data-target="tab-basic"
+              >
+                Dane Podstawowe & Opis
+              </button>
+              <button
+                type="button"
+                class="tab-trigger"
+                data-target="tab-images"
+              >
+                Zdjęcia & Galeria
+              </button>
+              <button
+                type="button"
+                class="tab-trigger"
+                data-target="tab-variants"
+              >
+                Warianty & Kolory
+              </button>
+              <button type="button" class="tab-trigger" data-target="tab-specs">
+                Specyfikacja (Specs)
+              </button>
+            </nav>
+
+            <div class="tab-panels-content">
+              <section id="tab-basic" class="tab-panel active">
+                <div class="grid-2-cols">
+                  <div class="card">
+                    <h3 class="card-title">Ceny i Kategoria</h3>
+                    <div class="grid-2-cols gap-md">
+                      <div class="form-group">
+                        <label for="p-price">Cena (np. 49,99 zł)</label>
+                        <input
+                          type="text"
+                          id="p-price"
+                          placeholder="np. 34,99 zł"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="p-old-price"
+                          >Poprzednia cena (opcjonalnie)</label
+                        >
+                        <input
+                          type="text"
+                          id="p-old-price"
+                          placeholder="np. 49,99 zł"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-group mt-md">
+                      <label for="p-breadcrumbs"
+                        >Ścieżka kategorii (Bredcrumbs - oddzielaj
+                        przecinkami)</label
+                      >
+                      <input
+                        type="text"
+                        id="p-breadcrumbs"
+                        placeholder="np. Druk 3D, Akcesoria Biurowe"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <h3 class="card-title">
+                      Ustawienia Integracji / Przycisków
+                    </h3>
+                    <div class="form-group">
+                      <label for="p-config-mode"
+                        >Tryb przycisków na stronie</label
+                      >
+                      <select id="p-config-mode">
+                        <option value="mode-both">
+                          Oba przyciski (Allegro i Cults3D)
+                        </option>
+                        <option value="mode-allegro">Tylko Allegro</option>
+                        <option value="mode-cults">Tylko pliki Cults3D</option>
+                      </select>
+                    </div>
+                    <div class="form-group mt-md">
+                      <label for="p-allegro-link">Link do oferty Allegro</label>
+                      <input
+                        type="url"
+                        id="p-allegro-link"
+                        placeholder="https://allegro.pl/oferta/..."
+                      />
+                    </div>
+                    <div class="form-group mt-md">
+                      <label for="p-cults-link">Link do pobrania Cults3D</label>
+                      <input
+                        type="url"
+                        id="p-cults-link"
+                        placeholder="https://cults3d.com/pl/model-3d/..."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card mt-md">
+                  <h3 class="card-title">Opisy Produktu</h3>
+
+                  <div class="form-group">
+                    <label for="p-short-desc"
+                      >Krótki opis (zajawka w panelu zakupowym)</label
+                    >
+                    <textarea
+                      id="p-short-desc"
+                      rows="3"
+                      placeholder="Wpisz krótki, zachęcający opis produktu..."
+                    ></textarea>
+                  </div>
+
+                  <div class="form-group mt-md">
+                    <div class="label-with-helpers">
+                      <label for="p-long-desc"
+                        >Długi opis (HTML wstrzykiwany na Bloggerze)</label
+                      >
+                      <div class="html-helpers">
+                        <span class="helper-label">Wstaw znacznik HTML:</span>
+                        <button
+                          type="button"
+                          class="helper-btn"
+                          onclick="insertHtmlTag('p')"
+                        >
+                          Paragraf
+                        </button>
+                        <button
+                          type="button"
+                          class="helper-btn"
+                          onclick="insertHtmlTag('strong')"
+                        >
+                          Pogrubienie
+                        </button>
+                        <button
+                          type="button"
+                          class="helper-btn"
+                          onclick="insertHtmlTag('h4')"
+                        >
+                          Nagłówek sekcji
+                        </button>
+                        <button
+                          type="button"
+                          class="helper-btn"
+                          onclick="insertHtmlTag('checklist')"
+                        >
+                          Lista z ikonami (Checklist)
+                        </button>
+                        <button
+                          type="button"
+                          class="helper-btn"
+                          onclick="insertHtmlTag('imgbox')"
+                        >
+                          Kontener zdjęcia z podpisem
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="description-split-container">
+                      <div class="description-editor-pane">
+                        <div class="pane-header">
+                          <span>Kod HTML</span>
+                          <div class="template-selector-area">
+                            <select id="template-select">
+                              <option value="">Wczytaj szablon...</option>
+                            </select>
+                            <button
+                              type="button"
+                              id="btn-save-as-template"
+                              class="btn btn-small"
+                            >
+                              Zapisz jako szablon
+                            </button>
+                          </div>
+                        </div>
+                        <textarea
+                          id="p-long-desc"
+                          placeholder="Wpisz pełny opis produktu z kodem HTML..."
+                        ></textarea>
+                      </div>
+
+                      <div class="description-preview-pane">
+                        <div class="pane-header">
+                          <span>Podgląd na żywo (Blogger)</span>
+                        </div>
+                        <div
+                          class="blogger-preview-content"
+                          id="p-long-desc-preview"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="tab-images" class="tab-panel">
+                <div class="card">
+                  <h3 class="card-title">Dodaj zdjęcia produktu</h3>
+                  <p class="card-subtitle">
+                    Wgraj zdjęcia ze swojego komputera. Zostaną one
+                    automatycznie przekopiowane do folderu
+                    <code>images/</code> w repozytorium, zmienione na nazwy
+                    według schematu i dodane do pliku JSON jako pełne linki
+                    GitHub Raw.
+                  </p>
+
+                  <div class="drag-drop-zone" id="image-drag-zone">
+                    <input
+                      type="file"
+                      id="image-file-input"
+                      multiple
+                      accept="image/*"
+                      class="file-input-hidden"
+                    />
+                    <div class="drag-zone-content">
+                      <svg
+                        class="drag-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <rect
+                          x="3"
+                          y="3"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                      <p>
+                        Przeciągnij i upuść zdjęcia tutaj lub
+                        <span>kliknij, aby wybrać z dysku</span>
+                      </p>
+                      <span class="file-limits"
+                        >Obsługiwane formaty: JPG, PNG, WEBP, GIF</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="images-manager-section mt-lg">
+                    <div class="section-header">
+                      <h4 class="section-title">
+                        Galeria zdjęć produktu (W kolejności wyświetlania)
+                      </h4>
+                      <span class="images-count" id="images-count-badge"
+                        >0 zdjęć</span
+                      >
+                    </div>
+
+                    <div class="images-sort-list" id="images-sort-container">
+                      <div class="empty-state">
+                        Brak dodanych zdjęć. Użyj strefy powyżej lub wklej
+                        ręcznie link do listy.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="manual-url-adder mt-md">
+                    <label for="manual-img-url"
+                      >Dodaj zewnętrzne zdjęcie po URL (np. z Unsplash lub
+                      Bloggera)</label
+                    >
+                    <div class="input-with-btn">
+                      <input
+                        type="url"
+                        id="manual-img-url"
+                        placeholder="https://images.unsplash.com/photo-..."
+                      />
+                      <button
+                        type="button"
+                        id="btn-add-manual-url"
+                        class="btn btn-secondary"
+                      >
+                        Dodaj link
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="tab-variants" class="tab-panel">
+                <div class="grid-2-cols">
+                  <div class="card">
+                    <div class="section-header">
+                      <h3 class="card-title">Kółka wyboru kolorów (Colors)</h3>
+                      <button
+                        type="button"
+                        id="btn-add-color"
+                        class="btn btn-small"
+                      >
+                        Dodaj kolor
+                      </button>
+                    </div>
+                    <p class="card-subtitle">
+                      Wyświetlane na stronie jako małe kółeczka oznaczające
+                      warianty kolorystyczne.
+                    </p>
+
+                    <div
+                      class="colors-list-table"
+                      id="colors-list-container"
+                    ></div>
+                  </div>
+
+                  <div class="card">
+                    <div class="section-header">
+                      <h3 class="card-title">Warianty / Powiązane produkty</h3>
+                      <button
+                        type="button"
+                        id="btn-add-variant"
+                        class="btn btn-small"
+                      >
+                        Dodaj wariant
+                      </button>
+                    </div>
+                    <p class="card-subtitle">
+                      Przyciski łączące różne podstrony powiązanych produktów
+                      (np. inne wersje lub rozmiary).
+                    </p>
+
+                    <div
+                      class="variants-list-table"
+                      id="variants-list-container"
+                    ></div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="tab-specs" class="tab-panel">
+                <div class="card">
+                  <div class="section-header">
+                    <h3 class="card-title">
+                      Specyfikacja techniczna (Tabela w zakładce)
+                    </h3>
+                    <button
+                      type="button"
+                      id="btn-add-spec"
+                      class="btn btn-secondary"
+                    >
+                      Dodaj wiersz specyfikacji
+                    </button>
+                  </div>
+                  <p class="card-subtitle">
+                    Parametry wyświetlane w formie czytelnej tabeli. Kluczowe
+                    jest podanie parametrów takich jak <code>Technologia</code>,
+                    <code>Materiał</code>, <code>Waga</code> czy
+                    <code>Wymiary</code>.
+                  </p>
+
+                  <div class="specs-table-container">
+                    <table class="editor-specs-table">
+                      <thead>
+                        <tr>
+                          <th>Nazwa parametru (np. Waga)</th>
+                          <th>Wartość (np. 145g)</th>
+                          <th width="80">Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody id="specs-list-container"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <footer class="form-actions-bar">
+              <div class="left-actions">
+                <button
+                  type="button"
+                  id="btn-open-blogger-link"
+                  class="btn btn-link-action"
+                  disabled
+                >
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    ></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                  Otwórz na Bloggerze
+                </button>
+              </div>
+
+              <div class="right-actions">
+                <button
+                  type="button"
+                  id="btn-delete-product"
+                  class="btn btn-danger"
+                  style="display: none"
+                >
+                  Usuń produkt
+                </button>
+                <button
+                  type="button"
+                  id="btn-duplicate-product"
+                  class="btn btn-secondary"
+                  style="display: none"
+                >
+                  Powiel produkt
+                </button>
+                <button
+                  type="button"
+                  id="btn-discard"
+                  class="btn btn-secondary"
+                >
+                  Odrzuć zmiany
+                </button>
+                <button
+                  type="submit"
+                  id="btn-save-product"
+                  class="btn btn-accent-gradient"
+                >
+                  Zapisz produkt
+                </button>
+              </div>
+            </footer>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <div id="settings-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Ustawienia programu</h2>
+          <button id="btn-close-settings" class="modal-close-btn">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="set-json-path">Ścieżka lokalna do bazy JSON</label>
+            <input
+              type="text"
+              id="set-json-path"
+              placeholder="../Rzeczy_Od_Reki_Baza_Produtow.json"
+            />
+          </div>
+
+          <div class="form-group mt-md">
+            <label for="set-images-path"
+              >Ścieżka lokalna do folderu zdjęć</label
+            >
+            <input type="text" id="set-images-path" placeholder="../images" />
+          </div>
+
+          <div class="grid-2-cols gap-md mt-md">
+            <div class="form-group">
+              <label for="set-github-user">Użytkownik GitHub</label>
+              <input type="text" id="set-github-user" placeholder="23Banzaj" />
+            </div>
+            <div class="form-group">
+              <label for="set-github-repo">Nazwa repozytorium</label>
+              <input
+                type="text"
+                id="set-github-repo"
+                placeholder="InfoMatyka"
+              />
+            </div>
+          </div>
+
+          <div class="grid-2-cols gap-md mt-md">
+            <div class="form-group">
+              <label for="set-github-branch">Gałąź (Branch)</label>
+              <input type="text" id="set-github-branch" placeholder="main" />
+            </div>
+            <div class="form-group">
+              <label for="set-image-pattern">Wzorzec nazewnictwa zdjęć</label>
+              <input
+                type="text"
+                id="set-image-pattern"
+                placeholder="[id]_[index]"
+              />
+            </div>
+          </div>
+
+          <div class="form-group mt-md">
+            <label for="set-blogger-url">Bazowy adres podglądu Bloggera</label>
+            <input
+              type="url"
+              id="set-blogger-url"
+              placeholder="https://www.rzeczyodreki.pl/p/produkt.html"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-save-settings" class="btn btn-accent btn-full-width">
+            Zapisz ustawienia
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="git-modal" class="modal-overlay">
+      <div class="modal-card modal-large">
+        <div class="modal-header">
+          <h2>Konsola synchronizacji Git z GitHub</h2>
+          <button id="btn-close-git" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body bg-dark-console">
+          <div id="git-action-controls" class="git-push-form">
+            <p>
+              Wpisz komentarz zmian do zatwierdzenia na GitHub (commit message):
+            </p>
+            <div class="input-with-btn">
+              <input
+                type="text"
+                id="git-commit-msg"
+                placeholder="np. Dodano nowy produkt 007 - Kubek termiczny"
+              />
+              <button id="btn-execute-push" class="btn btn-accent-gradient">
+                Uruchom Push (Wyślij)
+              </button>
+            </div>
+          </div>
+
+          <div id="git-status-files-container" class="git-status-files-container" style="display: none;">
+            <div class="console-label">Wykryte zmiany do wysłania (git status):</div>
+            <div id="git-status-files-list" class="git-status-files-list"></div>
+          </div>
+
+          <div class="console-label mt-md">Logi wykonania poleceń:</div>
+          <div class="console-output-box" id="git-console-output">
+            Wybierz operację z menu głównego lub wpisz wiadomość i wyślij
+            zmiany...
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-clear-console" class="btn btn-secondary">
+            Wyczyść logi
+          </button>
+          <button id="btn-execute-pull" class="btn btn-secondary">
+            Wykonaj Pull (Pobierz)
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="toast-container" class="toast-container"></div>
+  </body>
+</html>

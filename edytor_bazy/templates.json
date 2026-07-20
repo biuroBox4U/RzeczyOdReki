@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Szablon Standardowy (Opis + Lista + Zdjęcie)",
+    "html": "<p>To jest profesjonalny i funkcjonalny <strong>[Nazwa Produktu]</strong>, w całości wyprodukowany w technologii druku 3D z materiału klasy premium. Łączy nowoczesną estetykę z najwyższą użytecznością.</p>\n\n<h4 class='text-md font-bold mt-6 mb-2'>Główne zalety produktu:</h4>\n<ul class='check-list mb-6'>\n  <li>Specjalnie zaprojektowana konstrukcja o wysokiej ergonomii</li>\n  <li>Wytrzymały materiał o wysokiej odporności na zarysowania</li>\n  <li>Nowoczesny design pasujący do każdego wnętrza</li>\n</ul>\n\n<div class='my-8 rounded-xl overflow-hidden shadow-lg'>\n  <img src='https://images.unsplash.com/photo-155041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=80' class='w-full h-auto'>\n  <p class='text-xs text-center py-2 bg-gray-50 text-gray-500 border-t border-gray-100'>Krótki opis lub podpis pod zdjęciem produktu</p>\n</div>\n\n<p>Dzięki zastosowaniu ekologicznych i niezwykle trwałych materiałów, nasz produkt posłuży Ci przez lata.</p>"
+  },
+  {
+    "name": "Szablon Prosty (Tylko Tekst)",
+    "html": "<p>Nowoczesny i minimalistyczny <strong>[Nazwa Produktu]</strong> zaprojektowany z myślą o codziennej wygodzie użytkowania. Idealny mariaż estetyki z funkcjonalnością.</p>\n\n<p>Wykonany z dbałością o najmniejsze detale, sprawdzi się doskonale zarówno w domu, jak i w biurze.</p>"
+  }
+]

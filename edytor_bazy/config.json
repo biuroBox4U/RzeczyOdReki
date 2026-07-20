@@ -1,0 +1,9 @@
+{
+  "jsonFilePath": "../Rzeczy_Od_Reki_Baza_Produtow.json",
+  "imagesDirPath": "../images",
+  "githubUser": "biuroBox4U",
+  "githubRepo": "StronaRzeczyOdReki",
+  "githubBranch": "main",
+  "imageNamingPattern": "[id]_[index]",
+  "bloggerProductBaseUrl": "https://www.rzeczyodreki.pl/p/produkt.html"
+}
