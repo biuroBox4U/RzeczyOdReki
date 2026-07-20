@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const CONFIG_PATH = path.join(__dirname, "config.json");
 
-let config = {{
+let config = {
   "jsonFilePath": "../Rzeczy_Od_Reki_Baza_Produtow.json",
   "imagesDirPath": "../images",
   "githubUser": "biuroBox4U",
