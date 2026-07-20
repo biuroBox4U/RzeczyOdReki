@@ -3,7 +3,7 @@
   "imagesDirPath": "../images",
   "githubUser": "biuroBox4U",
   "githubRepo": "StronaRzeczyOdReki",
-  "githubBranch": "main",
+  "githubBranch": "master",
   "imageNamingPattern": "[id]_[index]",
   "bloggerProductBaseUrl": "https://www.rzeczyodreki.pl/p/produkt.html"
 }

@@ -14,14 +14,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const CONFIG_PATH = path.join(__dirname, "config.json");
 
-let config = {
-  jsonFilePath: "../Rzeczy_Od_Reki_Baza_Produtow.json",
-  imagesDirPath: "../images",
-  githubUser: "23Banzaj",
-  githubRepo: "InfoMatyka",
-  githubBranch: "main",
-  imageNamingPattern: "[id]_[index]",
-  bloggerProductBaseUrl: "https://www.rzeczyodreki.pl/p/produkt.html",
+let config = {{
+  "jsonFilePath": "../Rzeczy_Od_Reki_Baza_Produtow.json",
+  "imagesDirPath": "../images",
+  "githubUser": "biuroBox4U",
+  "githubRepo": "StronaRzeczyOdReki",
+  "githubBranch": "master",
+  "imageNamingPattern": "[id]_[index]",
+  "bloggerProductBaseUrl": "https://www.rzeczyodreki.pl/p/produkt.html"
 };
 
 function runCmd(cmd, cwd = __dirname) {
@@ -227,7 +227,7 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
       }
     }
 
-    const githubRawUrl = `https://raw.githubusercontent.com/${config.githubUser}/${config.githubRepo}/${config.githubBranch}/${relativeImagesPath}/${targetName}`;
+    const githubRawUrl = `https://raw.githubusercontent.com/${config.githubUser}/${config.githubRepo}/refs/heads/${config.githubBranch}/${relativeImagesPath}/${targetName}`;
 
     res.json({
       success: true,
